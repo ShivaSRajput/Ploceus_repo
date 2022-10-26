@@ -1,0 +1,116 @@
+trigger: none
+pr: none
+variables:
+  - template: azure-pipeline-variables.yml
+  - group: SSHDetails
+  - group: subdetails
+  
+pool: $(agent_pool)
+
+stages:
+  - stage: Initial_validation
+    jobs:
+      - job: Initial_validation
+        steps:
+          - bash: az --version
+            displayName: Display Azure Version
+          - bash: terraform --version
+            displayName: Display Terraform Version
+          - bash: apt-get install sudo
+            displayName: Install Linux Package
+          - bash: wget https://aka.ms/downloadazcopy-v10-linux
+            displayName: Download AZCopy Package
+          - bash: tar -xvf downloadazcopy-v10-linux
+            displayName: Install AZCopy Package
+          - bash: eval `ssh-agent`
+            displayName: Configure SSH Agent
+
+  - template: ./azure-pipeline-module-template.yml
+    parameters:
+      environment: staging
+      subscription_id: $(ploceus-dev-05-sub-id)
+      tenant_id: $(ploceus-dev-05-tenant-id)
+      modules:
+        - name: resource_group 
+          version: v1.0.0 
+          destroy: false
+          skip: false
+          varfile: tfvars 
+          dependsOn: ["none"]
+
+        - name: vnet
+          version: v1.0.0 
+          destroy: false
+          skip: false
+          varfile: tfvars 
+          dependsOn: ["resource_group"]
+       
+        - name: subnet
+          version: v1.0.0  
+          destroy: false
+          skip: true 
+          varfile: tfvars 
+          dependsOn: ["resource_group","vnet"]
+
+        - name: windows_virtual_machine
+          version: v1.0.0  
+          destroy: false
+          skip: false
+          varfile: tfvars 
+          dependsOn: ["resource_group","vnet","subnet","storage_account","disk_encryption_set","key_vault_key","key_vault_access_policy","key_vault","public_ip"]
+
+        - name: storage_account
+          version: v1.0.0  
+          destroy: false
+          skip: false
+          varfile: tfvars 
+          dependsOn: ["resource_group","vnet","subnet"]  
+
+        - name: disk_encryption_set
+          version: v1.0.0  
+          destroy: false
+          skip: false
+          varfile: tfvars 
+          dependsOn: ["resource_group","vnet","subnet","storage_account","key_vault","key_vault_key","key_vault_access_policy"]      
+
+        - name: key_vault_access_policy
+          version: v1.0.0  
+          destroy: false
+          skip: false
+          varfile: tfvars 
+          dependsOn: ["resource_group","vnet","subnet","key_vault","key_vault_key"] 
+
+        - name: key_vault_key
+          version: v1.0.0  
+          destroy: false
+          skip: false
+          varfile: tfvars 
+          dependsOn: ["resource_group","vnet","subnet","key_vault"] 
+
+        - name: key_vault
+          version: v1.0.0  
+          destroy: false
+          skip: false
+          varfile: tfvars 
+          dependsOn: ["resource_group","vnet","subnet"] 
+
+        - name: network_security_group_association
+          version: v1.0.0  
+          destroy: false
+          skip: false
+          varfile: tfvars 
+          dependsOn: ["resource_group","vnet","subnet","network_security_group"] 
+
+        - name: network_security_group
+          version: v1.0.0  
+          destroy: false
+          skip: false
+          varfile: tfvars 
+          dependsOn: ["resource_group","vnet","subnet"] 
+
+        - name: public_ip
+          version: v1.0.0  
+          destroy: false
+          skip: false 
+          varfile: tfvars 
+          dependsOn: ["resource_group","vnet","subnet","network_security_group","network_security_group_association"] 

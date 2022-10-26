@@ -1,0 +1,10 @@
+Scenario Number					   1.a				 1.b 			 1.c 			 1.d     			 2.a			 2.b 				 2.c 				 2.d
+disable_password_authentication = true  			true			true			true				false			false				false				false
+use_ssh_keys                   	= true				true			false			false				false			true				true				false
+generate_new_ssh_key          	= false				true			false			true				false			false				true				true
+								  
+Successful/Failed				  Successful		Successful		Failed			Failed				Failed			Successful			Successful			Error
+Scenario Possibility			  Correct			Correct			Incorrect		Incorrect			Correct			Correct				Correct				Incorrect
+								  No Password		No Password		No Password		No Password			Password ON		Password ON			Password ON			Password ON
+								  Existing SSH key	New SSH Keys	No SSH keys		No SSH Keys			No SSH Keys		Existing SSH key	New SSH Keys		No SSH keys
+Top chances						  HIGH				HIGH			ZERO			ZERO				HIGH			HIGH				HIGH				Can be attained by 2.a

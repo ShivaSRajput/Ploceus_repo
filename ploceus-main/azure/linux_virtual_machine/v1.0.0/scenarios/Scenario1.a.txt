@@ -1,0 +1,818 @@
+*****************************************************************************
+***************************** TESTED SUCCESSFUL *****************************
+*****************************************************************************
+
+disable_password_authentication = true  -----------------> No password authentication available
+use_ssh_keys                    = true	-----------------> SSH keys are available
+generate_new_ssh_key            = false	-----------------> Use existing keys
+
+Plan: 14 to add, 0 to change, 0 to destroy.
+
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  + create
+ <= read (data resources)
+
+Terraform will perform the following actions:
+
+  # module.disk_encryption_set.data.azurerm_key_vault.key_vault_id["disk_encryption_set_1"] will be read during apply
+  # (config refers to values not yet known)
+ <= data "azurerm_key_vault" "key_vault_id"  {
+      + access_policy                   = (known after apply)
+      + enable_rbac_authorization       = (known after apply)
+      + enabled_for_deployment          = (known after apply)
+      + enabled_for_disk_encryption     = (known after apply)
+      + enabled_for_template_deployment = (known after apply)
+      + id                              = (known after apply)
+      + location                        = (known after apply)
+      + name                            = "ploceuskeyvault000270"
+      + network_acls                    = (known after apply)
+      + purge_protection_enabled        = (known after apply)
+      + resource_group_name             = "ploceusrg000270"
+      + sku_name                        = (known after apply)
+      + soft_delete_enabled             = (known after apply)
+      + tags                            = (known after apply)
+      + tenant_id                       = (known after apply)
+      + vault_uri                       = (known after apply)
+
+      + timeouts {
+          + read = (known after apply)
+        }
+    }
+
+  # module.disk_encryption_set.data.azurerm_key_vault_key.key_vault_key["disk_encryption_set_1"] will be read during apply
+  # (config refers to values not yet known)
+ <= data "azurerm_key_vault_key" "key_vault_key"  {
+      + curve              = (known after apply)
+      + e                  = (known after apply)
+      + id                 = (known after apply)
+      + key_opts           = (known after apply)
+      + key_size           = (known after apply)
+      + key_type           = (known after apply)
+      + key_vault_id       = (known after apply)
+      + n                  = (known after apply)
+      + name               = "ploceuskey000270"
+      + public_key_openssh = (known after apply)
+      + public_key_pem     = (known after apply)
+      + tags               = (known after apply)
+      + version            = (known after apply)
+      + versionless_id     = (known after apply)
+      + x                  = (known after apply)
+      + y                  = (known after apply)
+
+      + timeouts {
+          + read = (known after apply)
+        }
+    }
+
+  # module.disk_encryption_set.azurerm_disk_encryption_set.disk_encryption_set["disk_encryption_set_1"] will be created
+  + resource "azurerm_disk_encryption_set" "disk_encryption_set" {
+      + auto_key_rotation_enabled = false
+      + encryption_type           = "EncryptionAtRestWithCustomerKey"
+      + id                        = (known after apply)
+      + key_vault_key_id          = (known after apply)
+      + location                  = "westus2"
+      + name                      = "ploceusdiskencryptionset000270"
+      + resource_group_name       = "ploceusrg000270"
+      + tags                      = (known after apply)
+
+      + identity {
+          + principal_id = (known after apply)
+          + tenant_id    = (known after apply)
+          + type         = "SystemAssigned"
+        }
+    }
+
+  # module.key_vault.data.azurerm_client_config.current will be read during apply
+  # (config refers to values not yet known)
+ <= data "azurerm_client_config" "current"  {
+      + client_id       = (known after apply)
+      + id              = (known after apply)
+      + object_id       = (known after apply)
+      + subscription_id = (known after apply)
+      + tenant_id       = (known after apply)
+
+      + timeouts {
+          + read = (known after apply)
+        }
+    }
+
+  # module.key_vault.azurerm_key_vault.keyvault["key_vault_for_disk_encryption_set"] will be created
+  + resource "azurerm_key_vault" "keyvault" {
+      + access_policy                   = [
+          + {
+              + application_id          = null
+              + certificate_permissions = null
+              + key_permissions         = [
+                  + "get",
+                  + "list",
+                  + "create",
+                  + "delete",
+                  + "recover",
+                  + "backup",
+                  + "restore",
+                  + "purge",
+                ]
+              + object_id               = (known after apply)
+              + secret_permissions      = [
+                  + "get",
+                  + "list",
+                  + "delete",
+                  + "recover",
+                  + "backup",
+                  + "restore",
+                  + "purge",
+                ]
+              + storage_permissions     = []
+              + tenant_id               = (known after apply)
+            },
+        ]
+      + enable_rbac_authorization       = false
+      + enabled_for_deployment          = true
+      + enabled_for_disk_encryption     = true
+      + enabled_for_template_deployment = true
+      + id                              = (known after apply)
+      + location                        = "westus2"
+      + name                            = "ploceuskeyvault000270"
+      + purge_protection_enabled        = true
+      + resource_group_name             = "ploceusrg000270"
+      + sku_name                        = "standard"
+      + soft_delete_enabled             = (known after apply)
+      + soft_delete_retention_days      = 7
+      + tags                            = (known after apply)
+      + tenant_id                       = (known after apply)
+      + vault_uri                       = (known after apply)
+
+      + network_acls {
+          + bypass                     = (known after apply)
+          + default_action             = (known after apply)
+          + ip_rules                   = (known after apply)
+          + virtual_network_subnet_ids = (known after apply)
+        }
+    }
+
+  # module.key_vault.azurerm_key_vault.keyvault["key_vault_for_saving_private_key"] will be created
+  + resource "azurerm_key_vault" "keyvault" {
+      + access_policy                   = [
+          + {
+              + application_id          = null
+              + certificate_permissions = null
+              + key_permissions         = [
+                  + "get",
+                  + "list",
+                  + "create",
+                  + "delete",
+                  + "recover",
+                  + "backup",
+                  + "restore",
+                  + "purge",
+                ]
+              + object_id               = (known after apply)
+              + secret_permissions      = [
+                  + "get",
+                  + "set",
+                  + "list",
+                  + "delete",
+                  + "recover",
+                  + "backup",
+                  + "restore",
+                  + "purge",
+                ]
+              + storage_permissions     = []
+              + tenant_id               = (known after apply)
+            },
+        ]
+      + enable_rbac_authorization       = false
+      + enabled_for_deployment          = true
+      + enabled_for_disk_encryption     = false
+      + enabled_for_template_deployment = true
+      + id                              = (known after apply)
+      + location                        = "westus2"
+      + name                            = "ploceuskeyvault000270b"
+      + purge_protection_enabled        = false
+      + resource_group_name             = "ploceusrg000270"
+      + sku_name                        = "standard"
+      + soft_delete_enabled             = (known after apply)
+      + soft_delete_retention_days      = 7
+      + tags                            = (known after apply)
+      + tenant_id                       = (known after apply)
+      + vault_uri                       = (known after apply)
+
+      + network_acls {
+          + bypass                     = (known after apply)
+          + default_action             = (known after apply)
+          + ip_rules                   = (known after apply)
+          + virtual_network_subnet_ids = (known after apply)
+        }
+    }
+
+  # module.key_vault_access_policy.data.azurerm_key_vault.keyvault_id["key_vault_access_policy_1"] will be read during apply
+  # (config refers to values not yet known)
+ <= data "azurerm_key_vault" "keyvault_id"  {
+      + access_policy                   = (known after apply)
+      + enable_rbac_authorization       = (known after apply)
+      + enabled_for_deployment          = (known after apply)
+      + enabled_for_disk_encryption     = (known after apply)
+      + enabled_for_template_deployment = (known after apply)
+      + id                              = (known after apply)
+      + location                        = (known after apply)
+      + name                            = "ploceuskeyvault000270"
+      + network_acls                    = (known after apply)
+      + purge_protection_enabled        = (known after apply)
+      + resource_group_name             = "ploceusrg000270"
+      + sku_name                        = (known after apply)
+      + soft_delete_enabled             = (known after apply)
+      + tags                            = (known after apply)
+      + tenant_id                       = (known after apply)
+      + vault_uri                       = (known after apply)
+
+      + timeouts {
+          + read = (known after apply)
+        }
+    }
+
+  # module.key_vault_access_policy.azurerm_key_vault_access_policy.key_vault_access_policy["key_vault_access_policy_1"] will be created
+  + resource "azurerm_key_vault_access_policy" "key_vault_access_policy" {
+      + id                  = (known after apply)
+      + key_permissions     = [
+          + "Get",
+          + "WrapKey",
+          + "UnwrapKey",
+        ]
+      + key_vault_id        = (known after apply)
+      + object_id           = (known after apply)
+      + secret_permissions  = []
+      + storage_permissions = []
+      + tenant_id           = (known after apply)
+    }
+
+  # module.key_vault_key.data.azurerm_key_vault.key_vault_id["key_vault_key_1"] will be read during apply
+  # (config refers to values not yet known)
+ <= data "azurerm_key_vault" "key_vault_id"  {
+      + access_policy                   = (known after apply)
+      + enable_rbac_authorization       = (known after apply)
+      + enabled_for_deployment          = (known after apply)
+      + enabled_for_disk_encryption     = (known after apply)
+      + enabled_for_template_deployment = (known after apply)
+      + id                              = (known after apply)
+      + location                        = (known after apply)
+      + name                            = "ploceuskeyvault000270"
+      + network_acls                    = (known after apply)
+      + purge_protection_enabled        = (known after apply)
+      + resource_group_name             = "ploceusrg000270"
+      + sku_name                        = (known after apply)
+      + soft_delete_enabled             = (known after apply)
+      + tags                            = (known after apply)
+      + tenant_id                       = (known after apply)
+      + vault_uri                       = (known after apply)
+
+      + timeouts {
+          + read = (known after apply)
+        }
+    }
+
+  # module.key_vault_key.azurerm_key_vault_key.key_vault_key["key_vault_key_1"] will be created
+  + resource "azurerm_key_vault_key" "key_vault_key" {
+      + curve              = (known after apply)
+      + e                  = (known after apply)
+      + id                 = (known after apply)
+      + key_opts           = [
+          + "decrypt",
+          + "encrypt",
+          + "sign",
+          + "unwrapKey",
+          + "verify",
+          + "wrapKey",
+        ]
+      + key_size           = 2048
+      + key_type           = "RSA"
+      + key_vault_id       = (known after apply)
+      + n                  = (known after apply)
+      + name               = "ploceuskey000270"
+      + public_key_openssh = (known after apply)
+      + public_key_pem     = (known after apply)
+      + tags               = (known after apply)
+      + version            = (known after apply)
+      + versionless_id     = (known after apply)
+      + x                  = (known after apply)
+      + y                  = (known after apply)
+    }
+
+  # module.linux_vm.data.azurerm_key_vault.existing_ssh_keys_key_vault_id["linux_vm_1"] will be read during apply
+  # (config refers to values not yet known)
+ <= data "azurerm_key_vault" "existing_ssh_keys_key_vault_id"  {
+      + access_policy                   = (known after apply)
+      + enable_rbac_authorization       = (known after apply)
+      + enabled_for_deployment          = (known after apply)
+      + enabled_for_disk_encryption     = (known after apply)
+      + enabled_for_template_deployment = (known after apply)
+      + id                              = (known after apply)
+      + location                        = (known after apply)
+      + name                            = "ploceuskeyvault000270b"
+      + network_acls                    = (known after apply)
+      + purge_protection_enabled        = (known after apply)
+      + resource_group_name             = "PloceusSSHkeysRG"
+      + sku_name                        = (known after apply)
+      + soft_delete_enabled             = (known after apply)
+      + tags                            = (known after apply)
+      + tenant_id                       = (known after apply)
+      + vault_uri                       = (known after apply)
+
+      + timeouts {
+          + read = (known after apply)
+        }
+    }
+
+  # module.linux_vm.data.azurerm_key_vault_secret.existing_ssh_keys_key_valut_secret["linux_vm_1"] will be read during apply
+  # (config refers to values not yet known)
+ <= data "azurerm_key_vault_secret" "existing_ssh_keys_key_valut_secret"  {
+      + content_type   = (known after apply)
+      + id             = (known after apply)
+      + key_vault_id   = (known after apply)
+      + name           = "adminsshprivatelinuxvm1"
+      + tags           = (known after apply)
+      + value          = (sensitive value)
+      + version        = (known after apply)
+      + versionless_id = (known after apply)
+
+      + timeouts {
+          + read = (known after apply)
+        }
+    }
+
+  # module.linux_vm.data.azurerm_public_ip.public_ip["linux_vm_1_nic_1"] will be read during apply
+  # (config refers to values not yet known)
+ <= data "azurerm_public_ip" "public_ip"  {
+      + allocation_method       = (known after apply)
+      + domain_name_label       = (known after apply)
+      + fqdn                    = (known after apply)
+      + id                      = (known after apply)
+      + idle_timeout_in_minutes = (known after apply)
+      + ip_address              = (known after apply)
+      + ip_tags                 = (known after apply)
+      + ip_version              = (known after apply)
+      + location                = (known after apply)
+      + name                    = "ploceuspublicip000270"
+      + resource_group_name     = "ploceusrg000270"
+      + reverse_fqdn            = (known after apply)
+      + sku                     = (known after apply)
+      + tags                    = (known after apply)
+      + zones                   = (known after apply)
+
+      + timeouts {
+          + read = (known after apply)
+        }
+    }
+
+  # module.linux_vm.data.azurerm_storage_account.boot_diagnostics_storage_account["linux_vm_1"] will be read during apply
+  # (config refers to values not yet known)
+ <= data "azurerm_storage_account" "boot_diagnostics_storage_account"  {
+      + access_tier                       = (known after apply)
+      + account_kind                      = (known after apply)
+      + account_replication_type          = (known after apply)
+      + account_tier                      = (known after apply)
+      + allow_blob_public_access          = (known after apply)
+      + custom_domain                     = (known after apply)
+      + enable_https_traffic_only         = (known after apply)
+      + id                                = (known after apply)
+      + infrastructure_encryption_enabled = (known after apply)
+      + is_hns_enabled                    = (known after apply)
+      + location                          = (known after apply)
+      + name                              = "ploceusbootdiag000270"
+      + primary_access_key                = (sensitive value)
+      + primary_blob_connection_string    = (sensitive value)
+      + primary_blob_endpoint             = (known after apply)
+      + primary_blob_host                 = (known after apply)
+      + primary_connection_string         = (sensitive value)
+      + primary_dfs_endpoint              = (known after apply)
+      + primary_dfs_host                  = (known after apply)
+      + primary_file_endpoint             = (known after apply)
+      + primary_file_host                 = (known after apply)
+      + primary_location                  = (known after apply)
+      + primary_queue_endpoint            = (known after apply)
+      + primary_queue_host                = (known after apply)
+      + primary_table_endpoint            = (known after apply)
+      + primary_table_host                = (known after apply)
+      + primary_web_endpoint              = (known after apply)
+      + primary_web_host                  = (known after apply)
+      + queue_encryption_key_type         = (known after apply)
+      + resource_group_name               = "ploceusrg000270"
+      + secondary_access_key              = (sensitive value)
+      + secondary_blob_connection_string  = (sensitive value)
+      + secondary_blob_endpoint           = (known after apply)
+      + secondary_blob_host               = (known after apply)
+      + secondary_connection_string       = (sensitive value)
+      + secondary_dfs_endpoint            = (known after apply)
+      + secondary_dfs_host                = (known after apply)
+      + secondary_file_endpoint           = (known after apply)
+      + secondary_file_host               = (known after apply)
+      + secondary_location                = (known after apply)
+      + secondary_queue_endpoint          = (known after apply)
+      + secondary_queue_host              = (known after apply)
+      + secondary_table_endpoint          = (known after apply)
+      + secondary_table_host              = (known after apply)
+      + secondary_web_endpoint            = (known after apply)
+      + secondary_web_host                = (known after apply)
+      + table_encryption_key_type         = (known after apply)
+      + tags                              = (known after apply)
+
+      + timeouts {
+          + read = (known after apply)
+        }
+    }
+
+  # module.linux_vm.data.azurerm_subnet.subnet_id["linux_vm_1_nic_1"] will be read during apply
+  # (config refers to values not yet known)
+ <= data "azurerm_subnet" "subnet_id"  {
+      + address_prefix                                 = (known after apply)
+      + address_prefixes                               = (known after apply)
+      + enforce_private_link_endpoint_network_policies = (known after apply)
+      + enforce_private_link_service_network_policies  = (known after apply)
+      + id                                             = (known after apply)
+      + name                                           = "ploceussubnet000270"
+      + network_security_group_id                      = (known after apply)
+      + resource_group_name                            = "ploceusrg000270"
+      + route_table_id                                 = (known after apply)
+      + service_endpoints                              = (known after apply)
+      + virtual_network_name                           = "ploceusvnet000270"
+
+      + timeouts {
+          + read = (known after apply)
+        }
+    }
+
+  # module.linux_vm.azurerm_linux_virtual_machine.linux_virtual_machine["linux_vm_1"] will be created
+  + resource "azurerm_linux_virtual_machine" "linux_virtual_machine" {
+      + admin_password                  = (sensitive value)
+      + admin_username                  = "Ploceus"
+      + allow_extension_operations      = true
+      + computer_name                   = "ploceuslinux000270"
+      + custom_data                     = (sensitive value)
+      + disable_password_authentication = true
+      + extensions_time_budget          = "PT1H30M"
+      + id                              = (known after apply)
+      + location                        = "westus2"
+      + max_bid_price                   = -1
+      + name                            = "ploceuslinux000270"
+      + network_interface_ids           = (known after apply)
+      + patch_mode                      = "ImageDefault"
+      + platform_fault_domain           = -1
+      + priority                        = "Regular"
+      + private_ip_address              = (known after apply)
+      + private_ip_addresses            = (known after apply)
+      + provision_vm_agent              = true
+      + public_ip_address               = (known after apply)
+      + public_ip_addresses             = (known after apply)
+      + resource_group_name             = "ploceusrg000270"
+      + size                            = "Standard_B2s"
+      + tags                            = (known after apply)
+      + virtual_machine_id              = (known after apply)
+      + zone                            = (known after apply)
+
+      + additional_capabilities {
+          + ultra_ssd_enabled = false
+        }
+
+      + admin_ssh_key {
+          # At least one attribute in this block is (or was) sensitive,
+          # so its contents will not be displayed.
+        }
+
+      + boot_diagnostics {
+          + storage_account_uri = (known after apply)
+        }
+
+      + identity {
+          + principal_id = (known after apply)
+          + tenant_id    = (known after apply)
+          + type         = "SystemAssigned"
+        }
+
+      + os_disk {
+          + caching                   = "None"
+          + disk_size_gb              = 70
+          + name                      = "ploceusosdisk000270"
+          + storage_account_type      = "Standard_LRS"
+          + write_accelerator_enabled = false
+        }
+
+      + source_image_reference {
+          + offer     = "UbuntuServer"
+          + publisher = "Canonical"
+          + sku       = "18.04-LTS"
+          + version   = "latest"
+        }
+    }
+
+  # module.linux_vm.azurerm_network_interface.network_interface["linux_vm_1_nic_1"] will be created
+  + resource "azurerm_network_interface" "network_interface" {
+      + applied_dns_servers           = (known after apply)
+      + dns_servers                   = (known after apply)
+      + enable_accelerated_networking = false
+      + enable_ip_forwarding          = false
+      + id                            = (known after apply)
+      + internal_dns_name_label       = (known after apply)
+      + internal_domain_name_suffix   = (known after apply)
+      + location                      = "westus2"
+      + mac_address                   = (known after apply)
+      + name                          = "ploceusnic000270"
+      + private_ip_address            = (known after apply)
+      + private_ip_addresses          = (known after apply)
+      + resource_group_name           = "ploceusrg000270"
+      + tags                          = (known after apply)
+      + virtual_machine_id            = (known after apply)
+
+      + ip_configuration {
+          + gateway_load_balancer_frontend_ip_configuration_id = (known after apply)
+          + name                                               = "ipconfig1"
+          + primary                                            = true
+          + private_ip_address                                 = (known after apply)
+          + private_ip_address_allocation                      = "dynamic"
+          + private_ip_address_version                         = "IPv4"
+          + public_ip_address_id                               = (known after apply)
+          + subnet_id                                          = (known after apply)
+        }
+    }
+
+  # module.network_security_group.data.azurerm_resource_group.resource_group["network_security_group_1"] will be read during apply
+  # (config refers to values not yet known)
+ <= data "azurerm_resource_group" "resource_group"  {
+      + id       = (known after apply)
+      + location = (known after apply)
+      + name     = "ploceusrg000270"
+      + tags     = (known after apply)
+
+      + timeouts {
+          + read = (known after apply)
+        }
+    }
+
+  # module.network_security_group.azurerm_network_security_group.network_security_group["network_security_group_1"] will be created
+  + resource "azurerm_network_security_group" "network_security_group" {
+      + id                  = (known after apply)
+      + location            = (known after apply)
+      + name                = "ploceusnsg000270"
+      + resource_group_name = "ploceusrg000270"
+      + security_rule       = (known after apply)
+      + tags                = (known after apply)
+    }
+
+  # module.network_security_group_association.data.azurerm_network_interface.nic["nsg_association_variable_1"] will be read during apply
+  # (config refers to values not yet known)
+ <= data "azurerm_network_interface" "nic"  {
+      + applied_dns_servers           = (known after apply)
+      + dns_servers                   = (known after apply)
+      + enable_accelerated_networking = (known after apply)
+      + enable_ip_forwarding          = (known after apply)
+      + id                            = (known after apply)
+      + internal_dns_name_label       = (known after apply)
+      + ip_configuration              = (known after apply)
+      + location                      = (known after apply)
+      + mac_address                   = (known after apply)
+      + name                          = "ploceusnic000270"
+      + network_security_group_id     = (known after apply)
+      + private_ip_address            = (known after apply)
+      + private_ip_addresses          = (known after apply)
+      + resource_group_name           = "ploceusrg000270"
+      + tags                          = (known after apply)
+      + virtual_machine_id            = (known after apply)
+
+      + timeouts {
+          + read = (known after apply)
+        }
+    }
+
+  # module.network_security_group_association.data.azurerm_network_security_group.nsg["nsg_association_variable_1"] will be read during apply
+  # (config refers to values not yet known)
+ <= data "azurerm_network_security_group" "nsg"  {
+      + id                  = (known after apply)
+      + location            = (known after apply)
+      + name                = "ploceusnsg000270"
+      + resource_group_name = "ploceusrg000270"
+      + security_rule       = (known after apply)
+      + tags                = (known after apply)
+
+      + timeouts {
+          + read = (known after apply)
+        }
+    }
+
+  # module.network_security_group_association.azurerm_network_interface_security_group_association.nsg_association["nsg_association_variable_1"] will be created
+  + resource "azurerm_network_interface_security_group_association" "nsg_association" {
+      + id                        = (known after apply)
+      + network_interface_id      = (known after apply)
+      + network_security_group_id = (known after apply)
+    }
+
+  # module.public_ip.azurerm_public_ip.public_ip["public_ip_1"] will be created
+  + resource "azurerm_public_ip" "public_ip" {
+      + allocation_method       = "Static"
+      + availability_zone       = "1"
+      + domain_name_label       = "ploceuspublicip000270"
+      + fqdn                    = (known after apply)
+      + id                      = (known after apply)
+      + idle_timeout_in_minutes = 30
+      + ip_address              = (known after apply)
+      + ip_version              = "IPv4"
+      + location                = "westus2"
+      + name                    = "ploceuspublicip000270"
+      + resource_group_name     = "ploceusrg000270"
+      + sku                     = "Standard"
+      + sku_tier                = "Regional"
+      + tags                    = (known after apply)
+      + zones                   = (known after apply)
+    }
+
+  # module.resource_group.azurerm_resource_group.resource_group["resource_group_1"] will be created
+  + resource "azurerm_resource_group" "resource_group" {
+      + id       = (known after apply)
+      + location = "westus2"
+      + name     = "ploceusrg000270"
+      + tags     = (known after apply)
+    }
+
+  # module.storage_account.azurerm_storage_account.storage_account["storage_account_boot_diagnostics"] will be created
+  + resource "azurerm_storage_account" "storage_account" {
+      + access_tier                       = "Hot"
+      + account_kind                      = "StorageV2"
+      + account_replication_type          = "LRS"
+      + account_tier                      = "Standard"
+      + allow_blob_public_access          = true
+      + enable_https_traffic_only         = true
+      + id                                = (known after apply)
+      + infrastructure_encryption_enabled = false
+      + is_hns_enabled                    = false
+      + large_file_share_enabled          = false
+      + location                          = "westus2"
+      + min_tls_version                   = "TLS1_2"
+      + name                              = "ploceusbootdiag000270"
+      + nfsv3_enabled                     = false
+      + primary_access_key                = (sensitive value)
+      + primary_blob_connection_string    = (sensitive value)
+      + primary_blob_endpoint             = (known after apply)
+      + primary_blob_host                 = (known after apply)
+      + primary_connection_string         = (sensitive value)
+      + primary_dfs_endpoint              = (known after apply)
+      + primary_dfs_host                  = (known after apply)
+      + primary_file_endpoint             = (known after apply)
+      + primary_file_host                 = (known after apply)
+      + primary_location                  = (known after apply)
+      + primary_queue_endpoint            = (known after apply)
+      + primary_queue_host                = (known after apply)
+      + primary_table_endpoint            = (known after apply)
+      + primary_table_host                = (known after apply)
+      + primary_web_endpoint              = (known after apply)
+      + primary_web_host                  = (known after apply)
+      + queue_encryption_key_type         = "Service"
+      + resource_group_name               = "ploceusrg000270"
+      + secondary_access_key              = (sensitive value)
+      + secondary_blob_connection_string  = (sensitive value)
+      + secondary_blob_endpoint           = (known after apply)
+      + secondary_blob_host               = (known after apply)
+      + secondary_connection_string       = (sensitive value)
+      + secondary_dfs_endpoint            = (known after apply)
+      + secondary_dfs_host                = (known after apply)
+      + secondary_file_endpoint           = (known after apply)
+      + secondary_file_host               = (known after apply)
+      + secondary_location                = (known after apply)
+      + secondary_queue_endpoint          = (known after apply)
+      + secondary_queue_host              = (known after apply)
+      + secondary_table_endpoint          = (known after apply)
+      + secondary_table_host              = (known after apply)
+      + secondary_web_endpoint            = (known after apply)
+      + secondary_web_host                = (known after apply)
+      + shared_access_key_enabled         = true
+      + table_encryption_key_type         = "Service"
+      + tags                              = (known after apply)
+
+      + blob_properties {
+          + change_feed_enabled      = (known after apply)
+          + default_service_version  = (known after apply)
+          + last_access_time_enabled = (known after apply)
+          + versioning_enabled       = (known after apply)
+
+          + container_delete_retention_policy {
+              + days = (known after apply)
+            }
+
+          + cors_rule {
+              + allowed_headers    = (known after apply)
+              + allowed_methods    = (known after apply)
+              + allowed_origins    = (known after apply)
+              + exposed_headers    = (known after apply)
+              + max_age_in_seconds = (known after apply)
+            }
+
+          + delete_retention_policy {
+              + days = (known after apply)
+            }
+        }
+
+      + customer_managed_key {
+          + key_vault_key_id          = (known after apply)
+          + user_assigned_identity_id = (known after apply)
+        }
+
+      + network_rules {
+          + bypass                     = (known after apply)
+          + default_action             = (known after apply)
+          + ip_rules                   = (known after apply)
+          + virtual_network_subnet_ids = (known after apply)
+
+          + private_link_access {
+              + endpoint_resource_id = (known after apply)
+              + endpoint_tenant_id   = (known after apply)
+            }
+        }
+
+      + queue_properties {
+          + cors_rule {
+              + allowed_headers    = (known after apply)
+              + allowed_methods    = (known after apply)
+              + allowed_origins    = (known after apply)
+              + exposed_headers    = (known after apply)
+              + max_age_in_seconds = (known after apply)
+            }
+
+          + hour_metrics {
+              + enabled               = (known after apply)
+              + include_apis          = (known after apply)
+              + retention_policy_days = (known after apply)
+              + version               = (known after apply)
+            }
+
+          + logging {
+              + delete                = (known after apply)
+              + read                  = (known after apply)
+              + retention_policy_days = (known after apply)
+              + version               = (known after apply)
+              + write                 = (known after apply)
+            }
+
+          + minute_metrics {
+              + enabled               = (known after apply)
+              + include_apis          = (known after apply)
+              + retention_policy_days = (known after apply)
+              + version               = (known after apply)
+            }
+        }
+
+      + routing {
+          + choice                      = (known after apply)
+          + publish_internet_endpoints  = (known after apply)
+          + publish_microsoft_endpoints = (known after apply)
+        }
+
+      + share_properties {
+          + cors_rule {
+              + allowed_headers    = (known after apply)
+              + allowed_methods    = (known after apply)
+              + allowed_origins    = (known after apply)
+              + exposed_headers    = (known after apply)
+              + max_age_in_seconds = (known after apply)
+            }
+
+          + retention_policy {
+              + days = (known after apply)
+            }
+
+          + smb {
+              + authentication_types            = (known after apply)
+              + channel_encryption_type         = (known after apply)
+              + kerberos_ticket_encryption_type = (known after apply)
+              + versions                        = (known after apply)
+            }
+        }
+    }
+
+  # module.subnet.azurerm_subnet.subnet["subnet_1"] will be created
+  + resource "azurerm_subnet" "subnet" {
+      + address_prefix                                 = (known after apply)
+      + address_prefixes                               = [
+          + "10.0.1.0/24",
+        ]
+      + enforce_private_link_endpoint_network_policies = false
+      + enforce_private_link_service_network_policies  = false
+      + id                                             = (known after apply)
+      + name                                           = "ploceussubnet000270"
+      + resource_group_name                            = "ploceusrg000270"
+      + virtual_network_name                           = "ploceusvnet000270"
+    }
+
+  # module.vnet.azurerm_virtual_network.vnet["vnet_1"] will be created
+  + resource "azurerm_virtual_network" "vnet" {
+      + address_space         = [
+          + "10.0.0.0/16",
+        ]
+      + dns_servers           = []
+      + guid                  = (known after apply)
+      + id                    = (known after apply)
+      + location              = "westus2"
+      + name                  = "ploceusvnet000270"
+      + resource_group_name   = "ploceusrg000270"
+      + subnet                = (known after apply)
+      + tags                  = (known after apply)
+      + vm_protection_enabled = false
+    }
+
+Plan: 14 to add, 0 to change, 0 to destroy.

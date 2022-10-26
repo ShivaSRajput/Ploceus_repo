@@ -1,0 +1,83 @@
+parameters:
+  - name: environment
+    type: string
+  - name: modules
+    type: object
+  - name: subscription_id
+    type: string
+  - name: tenant_id
+    type: string
+stages:
+  - stage: start_${{ parameters.environment }}_apply
+    jobs:
+      - job: Start
+        steps:
+          - bash: echo Starting deployment
+    dependsOn: Initial_validation
+  - ${{ each component in parameters.modules }}:
+    - stage: ${{ component.name }}_${{ parameters.environment}}_plan
+      displayName: Deploying ${{ component.name }}
+      variables:
+      - template: ./azure-pipeline-variables.yml
+      - name: skipit
+        value: ${{ component.skip }}
+      dependsOn:
+        - ${{ each dependency in component.dependsOn }}:
+            - ${{ if eq(dependency, 'none') }}:
+              - start_${{ parameters.environment }}_apply
+            - ${{ else }}:
+              - ${{ dependency }}_${{ parameters.environment}}_plan
+      condition: eq(variables.skipit, 'false')         
+      jobs:
+        - job:
+          displayName: ${{ component.name }}
+          steps:
+            - task: Bash@3
+              displayName: Initial validation
+              enabled: true
+              inputs:
+                targetType: 'inline'
+                script: |
+                  echo 'Copy files....'
+                  pwd                          
+                  echo "$(System.DefaultWorkingDirectory)/component-${{ component.name }}/"
+                  mkdir -p $(System.DefaultWorkingDirectory)/component-${{ component.name }}/
+                  cp -r $(System.DefaultWorkingDirectory)/azure/${{ component.name }}/${{ component.version }}/* $(System.DefaultWorkingDirectory)/component-${{ component.name }}/
+                  echo 'cd component-${{ component.name }}'
+                  cd component-${{ component.name }}/
+                  echo 'Copy scripts to example'
+                  cp -r $(System.DefaultWorkingDirectory)/pipeline_scripts/* $(System.DefaultWorkingDirectory)/component-${{ component.name }}/     
+                  echo 'tfvars from tfvars folder'
+                  cp -r $(System.DefaultWorkingDirectory)/tfvars/tfvars/${{ component.name }}.${{ component.varfile }} $(System.DefaultWorkingDirectory)/component-${{ component.name }}/ 
+                  echo 'Copy provider.tf from scripts folder and paste it to component-${{ component.name }}' 
+                  cp -r $(System.DefaultWorkingDirectory)/pipeline_scripts/provider.tf $(System.DefaultWorkingDirectory)/component-${{ component.name }}/
+                  echo 'renaming ${{ component.varfile }}'
+                  mv ${{ component.name }}.${{ component.varfile }} var-${{ component.name }}-auto.${{ component.varfile }}
+            - task: InstallSSHKey@0
+              enabled: true
+              inputs:
+                knownHostsEntry: '$(knownhost)'
+                sshPublicKey: '$(sshpublickey)'
+                sshKeySecureFile: 'id_rsa'
+            - task: AzureCLI@2
+              displayName: State Setup ${{ component.name }}
+              enabled: true
+              inputs:
+                azureSubscription: ${{ variables.serviceConnectionApp }}
+                addSpnToEnvironment: false
+                scriptType: bash
+                scriptLocation: scriptPath
+                scriptPath: "$(System.DefaultWorkingDirectory)/component-${{ component.name }}/terraforminit.sh"
+                arguments: ${{ component.name }} ${{ parameters.environment }} $(backendResourceGroupName) $(backendStorageAccountName) $(backendContainerName) ${{ component.name }} ${{ parameters.subscription_id }} ${{ parameters.tenant_id }}
+                workingDirectory: "$(System.DefaultWorkingDirectory)/component-${{ component.name }}"
+            - task: AzureCLI@2
+              displayName: Plan and Apply ${{ component.name }}
+              enabled: true
+              inputs:
+                azureSubscription: ${{ variables.serviceConnectionApp }}
+                addSpnToEnvironment: false
+                scriptType: bash
+                scriptLocation: scriptPath
+                scriptPath: "$(System.DefaultWorkingDirectory)/component-${{ component.name }}/terraformplan.sh"
+                arguments: ${{ component.name }} ${{ parameters.environment }} $(backendResourceGroupName) $(backendStorageAccountName) $(backendContainerName) ${{ component.varfile }} ${{component.destroy}} ${{ parameters.subscription_id }} ${{ parameters.tenant_id }}
+                workingDirectory: "$(System.DefaultWorkingDirectory)/component-${{ component.name }}"

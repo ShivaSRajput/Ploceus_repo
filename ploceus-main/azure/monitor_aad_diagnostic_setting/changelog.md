@@ -1,0 +1,8 @@
+# Monitor AAD Diagnostic Settings Module Change Log
+
+## monitor_aad_diagnostic_setting module v1.1.0 features and bug fixes:
+
+1. Updated for_each object reference
+2. Tested compatibility with azure_rm 3.90
+3. Tested compatibility with Terraform version 1.2.6
+4. The API for this module does not support service principal authentication. This module can only be used with Azure CLI authentication.

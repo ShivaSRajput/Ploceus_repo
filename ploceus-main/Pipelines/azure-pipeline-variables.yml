@@ -1,0 +1,18 @@
+variables:
+  - name: agent_pool
+    value: "ContainerInstance"
+  - name: serviceConnectionApp
+    value: ploceus-dev-05
+  # Terraform Backend State Setup
+  - name: backendResourceGroupName
+    value: ploceus-storage-acc
+  - name: backendStorageAccountName
+    value: ploceusstatefilestorage1
+  - name: backendContainerName
+    value: ploceus-dev-westus2-tfstate
+  - name: storagaContainerName
+    value: input-json-files
+  - name: storagaccountName
+    value: ploceusstatefilestorage1
+  - name: storagaccountRG
+    value: ploceus-storage-acc

@@ -1,0 +1,3 @@
+output "vpn_server_configuration_policy_group_id" {
+  value = module.vpn_server_configuration_policy_group.vpn_server_configuration_policy_group_id
+}

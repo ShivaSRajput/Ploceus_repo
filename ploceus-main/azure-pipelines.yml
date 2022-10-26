@@ -1,0 +1,90 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- none
+pr:
+ branches: 
+  include:
+    - main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- checkout:  self
+  persistCredentials: true
+- bash: |
+    curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+    touch ".tflint.hcl"
+    echo 'plugin "terraform" {
+      enabled = true
+      preset  = "recommended"
+    }
+    plugin "azurerm" {
+        enabled = true
+        version = "0.18.0"
+        source  = "github.com/terraform-linters/tflint-ruleset-azurerm"
+    }' >> ".tflint.hcl"
+    tflint --init
+- bash: curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+- bash: pip3 install checkov
+- task: PowerShell@2
+  displayName: Validate
+  inputs:
+    targetType: 'inline'
+    script: |
+      
+      #$p = git diff --name-only origin/main | where {$_.startswith("azure/")}
+      #$examples = (dir ($p|resolve-path -ErrorAction SilentlyContinue) -ErrorAction SilentlyContinue).DirectoryName -match 'example$'
+      #$mainChanges = $((dir ($p|resolve-path -ErrorAction SilentlyContinue) -ErrorAction SilentlyContinue).DirectoryName -match 'v\d.\d.\d$')|foreach {"$_/example"}
+
+      git pull origin main
+      $p = git diff --name-only origin/main | where {$_.startswith("azure/")}|foreach {($_.split("/")|select -SkipLast 1) -join "/"}|Resolve-Path -ErrorAction SilentlyContinue|select -Unique
+      $examples = $p -match 'example$'
+      $mainChanges = $($p -match 'v\d.\d.\d$')|foreach {"$_/example"}
+      if (-not $examples){
+        $examples = $()
+      }
+      if ($mainChanges -eq "False/example"){
+        $mainChanges = $()
+      }
+      write-host "Changes in examples: $examples"
+      write-host "Changes in Module $mainChanges"
+      
+      foreach ($module in (($examples + $mainChanges)|select -Unique)){
+        Write-Host "############## Checking $module ##############"
+
+        cd $module
+        
+        Write-Host "### Example File Check ###"
+        @("main.tf","output.tf","provider.tf","terraform.tfvars","variables.tf")|gi|out-null
+        Write-Host "### Run Init ###"
+        terraform init
+        Write-Host "### Run Validate ###"
+        terraform validate
+        tflint --module -f junit  >> "$(build.artifactstagingdirectory)/$($(Get-Date).ToFileTimeUTC())tflint.xml"
+        tfsec --tfvars-file terraform.tfvars -f junit >> "$(build.artifactstagingdirectory)/$($(Get-Date).ToFileTimeUTC())tfsec.xml"
+        checkov -d . -o junitxml >> "$(build.artifactstagingdirectory)/$($(Get-Date).ToFileTimeUTC())checkov.xml"
+        cd.. 
+        @("main.tf","output.tf","provider.tf","example","variables.tf")|gi|out-null
+
+        write-host "### Checking FMT ###"
+        terraform fmt -check -recursive
+
+        cd..
+        @("changelog.md")|gi|out-null
+      }
+    pwsh: true
+- task: PublishTestResults@2
+  displayName: "Publish Test: Results"
+  condition: succeededOrFailed()
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '*.xml'
+    searchFolder: '$(build.artifactstagingdirectory)'
+    mergeTestResults: false
+    testRunTitle: 'Validation Scan'
+
